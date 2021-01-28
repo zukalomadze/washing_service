@@ -1,5 +1,5 @@
 from django.contrib import admin
-from carwash.models import CarWash, Employee, Booth, Location, Car, Supplier, Inventory
+from carwash.models import CarWash, Employee, Booth, Location, Car, Supplier, Inventory, Orders
 # Register your models here.
 
 
@@ -20,6 +20,13 @@ class InventoryInLine(admin.TabularInline):
 class CarWashAdmin(admin.ModelAdmin):
     inlines = [BoothInline]
 
+    def has_add_permission(self, request):
+        num_objects = self.model.objects.count()
+        if num_objects >= 1:
+            return False
+        else:
+            return True
+
 
 @admin.register(Employee)
 class EmployeeAdmin(admin.ModelAdmin):
@@ -39,3 +46,10 @@ class SupplierAdmin(admin.ModelAdmin):
 @admin.register(Car, Location, Inventory)
 class LocationAdmin(admin.ModelAdmin):
     pass
+
+
+@admin.register(Orders)
+class OrdersAdmin(admin.ModelAdmin):
+    ordering = ('start_time',)
+    readonly_fields = ['price']
+    list_display = ('booth', 'washer', 'start_time', 'end_time', 'car', 'price')

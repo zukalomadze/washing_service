@@ -38,10 +38,7 @@ class Employee(models.Model):
 class Booth(models.Model):
     booth_number = models.CharField(verbose_name="Booth Number", max_length=255)  # ბოქსების სახელი იწერება 01
     occupied = models.BooleanField(verbose_name="Occupied", default=False)
-    washer = models.OneToOneField(to='carwash.Employee', on_delete=models.SET_NULL, related_name='booth', null=True)
     company = models.ForeignKey(to="carwash.CarWash", on_delete=models.CASCADE, related_name='booth')
-    car = models.OneToOneField(to="carwash.Car", on_delete=models.CASCADE, related_name="booth",
-                               blank=True, null=True)
 
     class Meta:
         verbose_name = 'Booth'
@@ -51,18 +48,11 @@ class Booth(models.Model):
     def __str__(self):
         return self.booth_number
 
-    def save(self, *args, **kwargs):
-        if self.car:
-            self.occupied = True
-        else:
-            self.occupied = False
-        super(Booth, self).save(*args, **kwargs)
-
 
 class Car(models.Model):
     brand = models.CharField(verbose_name="Car Brand", max_length=255)
     license_plate = models.CharField(verbose_name="License Plate", max_length=255)
-    car_type = models.PositiveSmallIntegerField(choices=CarChoice.choices, default=CarChoice.Other)
+    car_type = models.PositiveSmallIntegerField(choices=CarChoice.choices, default=CarChoice.Sedan)
 
     class Meta:
         verbose_name = 'Car'
@@ -99,7 +89,7 @@ class Supplier(models.Model):
 
 class Inventory(models.Model):
     name = models.CharField(max_length=255)
-    price = models.DecimalField(default=0.0, decimal_places=2, max_digits=5)
+    price = models.DecimalField(default=0.0, decimal_places=2, max_digits=8)
     company = models.ForeignKey(to='carwash.Supplier', related_name='inventory', on_delete=models.CASCADE)
 
     class Meta:
@@ -108,3 +98,25 @@ class Inventory(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Orders(models.Model):
+
+    booth = models.ForeignKey(to='carwash.Booth', related_name='orders', on_delete=models.CASCADE)
+    start_time = models.DateTimeField(verbose_name='Start time')
+    end_time = models.DateTimeField(verbose_name='End time')
+    car = models.ForeignKey(to='carwash.Car', on_delete=models.CASCADE, related_name="orders")
+    price = models.DecimalField(default=0.0, decimal_places=2, max_digits=5)
+    washer = models.ForeignKey(to='carwash.Employee', on_delete=models.CASCADE, related_name='orders', null=True, blank=True)
+    create_time = models.DateTimeField(verbose_name="Create time", auto_now_add=True)
+
+    class Meta:
+        verbose_name = 'Order'
+        verbose_name_plural = " Orders"
+
+    def __str__(self):
+        return f"order: {self.pk}"
+
+    def save(self, *args, **kwargs):
+        self.price = self.car.car_type
+        super(Orders, self).save(*args, **kwargs)
