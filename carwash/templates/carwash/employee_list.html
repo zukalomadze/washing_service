@@ -1,10 +1,22 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-
-</body>
-</html>
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'carwash/employee_style.css' %}">
+<table class="container">
+	<thead>
+		<tr>
+			<th><h1>Washer</h1></th>
+			<th><h1>1 week</h1></th>
+			<th><h1>1 month</h1></th>
+			<th><h1>1 year</h1></th>
+		</tr>
+	</thead>
+	<tbody>
+        {% for emp,orders in orders.items %}
+        <tr>
+			<td>{{ emp }}</td>
+            {% for order in orders %}
+			    <td>{{ order }}</td>
+            {% endfor %}
+		</tr>
+        {% endfor %}
+	</tbody>
+</table>
