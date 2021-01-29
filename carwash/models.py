@@ -104,7 +104,7 @@ class Orders(models.Model):
 
     booth = models.ForeignKey(to='carwash.Booth', related_name='orders', on_delete=models.CASCADE)
     start_time = models.DateTimeField(verbose_name='Start time')
-    end_time = models.DateTimeField(verbose_name='End time')
+    end_time = models.DateTimeField(verbose_name='End time', blank=True, null=True)
     car = models.ForeignKey(to='carwash.Car', on_delete=models.CASCADE, related_name="orders")
     price = models.DecimalField(default=0.0, decimal_places=2, max_digits=5)
     washer = models.ForeignKey(to='carwash.Employee', on_delete=models.CASCADE, related_name='orders', null=True, blank=True)

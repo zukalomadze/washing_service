@@ -1,0 +1,12 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<link rel="stylesheet" type="text/css" href="{% static 'carwash/video_header.css' %}">
+<div class="overlay"></div>
+<video autoplay="autoplay" muted="muted" loop="loop" id="myVideo">
+    <source src="https://static.videezy.com/system/resources/previews/000/043/193/original/Untitled00000250.mp4" type="video/mp4">
+</video>
+{% block content %}
+
+{% endblock content %}
+</html>
