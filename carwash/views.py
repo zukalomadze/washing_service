@@ -1,3 +1,4 @@
+from django.db.models import Count
 from django.shortcuts import render
 from carwash.models import Order
 from user.models import User as Employee
@@ -35,3 +36,22 @@ def employee_list(request):
         context={
             'orders': orders,
         })
+
+
+def washer_list(request):
+    washers = Employee.objects.filter(status=Employee.Status.washer).annotate(washed_count=Count('orders'))
+    return render(
+        request,
+        'carwash/washer_list.html',
+        context={
+            'washers': washers
+        },
+    )
+
+
+def base(request):
+    return render(
+        request,
+        'carwash/base.html',
+        context={},
+    )

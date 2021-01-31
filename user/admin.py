@@ -19,7 +19,7 @@ class EmployeeAdmin(UserAdmin):
         (None, {
             'classes': ('wide',),
             'fields': (
-            'email', 'password1', 'password2', 'birthdate', 'image', 'salary', 'phone_number', 'hire_date', 'status'),
+            'email', 'first_name', 'last_name', 'password1', 'password2', 'birthdate', 'image', 'salary', 'phone_number', 'hire_date', 'status'),
         }),
     )
     list_filter = ('is_staff', 'is_superuser', 'is_active', 'groups')
