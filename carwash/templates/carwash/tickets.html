@@ -29,18 +29,18 @@
 		                                    <div class="ticket-time  col-md-4 col-sm-6 col-xs-12">
 		                                        <div class="divider hidden-md hidden-sm hidden-xs"></div>
 		                                        <i class="fa fa-clock-o"></i>
-		                                        <span class="time">start time: {{ order.start_time|date:"j/n/Y" }} {{ order.start_time|time:"H:i" }}</span>
+		                                        <span class="time">start time: {{ order.start_date|date:"j/n/Y" }} {{ order.start_date|time:"H:i" }}</span>
                                                 <br/>
-                                                <span class="time">end time: {{ order.end_time|date:"j/n/Y" }} {{ order.end_time|time:"H:i" }}</span>
+                                                <span class="time">end time: {{ order.end_date|date:"j/n/Y" }} {{ order.end_date|time:"H:i" }}</span>
 		                                    </div>
 		                                    <div class="ticket-type  col-md-2 col-sm-6 col-xs-12">
 		                                        <span class="divider hidden-xs"></span>
 		                                        <span class="car">car: {{ order.car.license_plate }}</span>
                                                 <br/>
                                                 <span class="price">{{ order.price }}$</span>
-                                                <span class="time-created">created: {{ order.create_time|date:"j/n/Y"}} {{order.create_time|time:"H:i" }}</span>
+                                                <span class="time-created">created: {{ order.create_date|date:"j/n/Y"}} {{order.create_date|time:"H:i" }}</span>
 		                                    </div>
-                                            {% if order.end_time %}
+                                            {% if order.end_date %}
 		                                    <div class="ticket-state bg-palegreen">
 		                                        <i class="fa fa-check"></i>
 		                                    </div>

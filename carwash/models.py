@@ -1,122 +1,88 @@
 from django.db import models
-from carwash.choices import CarChoice
+from django.utils.translation import ugettext_lazy as _
 
 
-# Create your models here.
-class CarWash(models.Model):
-    name = models.CharField(verbose_name="Company Name", max_length=255)
-    location = models.OneToOneField(to="carwash.Location", on_delete=models.PROTECT, related_name='company')
-    supplier = models.ManyToManyField(to='carwash.Supplier', related_name='company')
-
-    class Meta:
-        verbose_name = 'Car Wash'
-        verbose_name_plural = 'Car Washes'
+class CarType(models.Model):
+    name = models.CharField(max_length=45, verbose_name=_('Car Type'), unique=True)
+    price = models.DecimalField(max_digits=4, decimal_places=2)
 
     def __str__(self):
         return self.name
 
 
-class Employee(models.Model):
-    name = models.CharField(verbose_name="Name", max_length=255)
-    company = models.ForeignKey(to="carwash.CarWash", on_delete=models.CASCADE, related_name='employee')
-    salary = models.DecimalField(default=0.0, decimal_places=2, max_digits=5)
-
-    class Meta:
-        verbose_name = 'Employee'
-        verbose_name_plural = 'Employees'
+class WashType(models.Model):
+    name = models.CharField(max_length=45, verbose_name=_('Car Type'), unique=True)
+    percentage = models.IntegerField(verbose_name=_("Percentage of base price"), default=100)
 
     def __str__(self):
         return self.name
 
-    def salary_display(self):
 
-        return '${0}'.format(self.salary)
-
-    salary_display.short_description = 'Salary'
-
-
-class Booth(models.Model):
-    booth_number = models.CharField(verbose_name="Booth Number", max_length=255)  # ბოქსების სახელი იწერება 01
-    occupied = models.BooleanField(verbose_name="Occupied", default=False)
-    company = models.ForeignKey(to="carwash.CarWash", on_delete=models.CASCADE, related_name='booth')
-
-    class Meta:
-        verbose_name = 'Booth'
-        verbose_name_plural = 'Booths'
-        unique_together = ('company', 'booth_number')
+class Coupon(models.Model):
+    code = models.CharField(max_length=30, unique=True)
+    expiration_date = models.DateTimeField(verbose_name=_('Coupon Expiration Date'), null=True, blank=True)
+    discount = models.IntegerField(verbose_name=_('Discount'), help_text='%')
+    quantity = models.IntegerField(verbose_name=_('Quantity'), default=1)
+    car_plate = models.CharField(max_length=20, verbose_name=_("Car's license plate"))
 
     def __str__(self):
-        return self.booth_number
+        return self.code
+
+    class Meta:
+        verbose_name = _('Coupon')
+        verbose_name_plural = _('Coupons')
 
 
 class Car(models.Model):
-    brand = models.CharField(verbose_name="Car Brand", max_length=255)
-    license_plate = models.CharField(verbose_name="License Plate", max_length=255)
-    car_type = models.PositiveSmallIntegerField(choices=CarChoice.choices, default=CarChoice.Sedan)
-
-    class Meta:
-        verbose_name = 'Car'
-        verbose_name_plural = 'Cars'
-
-    def __str__(self):
-        return f'{self.brand}: {self.license_plate.upper()}'
-
-
-class Location(models.Model):
-    city = models.CharField(max_length=255)
-    street_address = models.CharField(max_length=255)
-    zip = models.CharField(max_length=7)
-
-    class Meta:
-        verbose_name = 'Location'
-        verbose_name_plural = 'Locations'
+    car_type = models.ForeignKey(
+        to='CarType',
+        on_delete=models.SET_NULL,
+        null=True, related_name='cars'
+    )
+    licence_plate = models.CharField(max_length=20, verbose_name=_("License plate"))
 
     def __str__(self):
-        return f'{self.city} : {self.street_address}: {self.zip}'
-
-
-class Supplier(models.Model):
-    name = models.CharField(max_length=255)
-    location = models.OneToOneField(to="carwash.Location", on_delete=models.PROTECT, related_name='supplier')
+        return self.licence_plate
 
     class Meta:
-        verbose_name = 'Supplier'
-        verbose_name_plural = 'Suppliers'
+        verbose_name = _('Car')
+        verbose_name_plural = _('Cars')
+
+
+class Order(models.Model):
+    car = models.ForeignKey(
+        to='Car', related_name='orders',
+        on_delete=models.PROTECT,
+    )
+    employee = models.ForeignKey(
+        to='user.User', on_delete=models.SET_NULL,
+        null=True, related_name='orders',
+    )
+    coupon = models.ForeignKey(
+        to='Coupon', related_name='orders',
+        on_delete=models.PROTECT,
+        null=True, blank=True,
+    )
+    wash_type = models.ForeignKey(
+        to='WashType', related_name='orders',
+        on_delete=models.PROTECT,
+    )
+
+    note = models.TextField(null=True, blank=True, verbose_name=_("Note"))
+    price = models.DecimalField(max_digits=4, decimal_places=2, verbose_name=_("Price"))
+
+    created_date = models.DateTimeField(auto_now_add=True, verbose_name=_("Created date"))
+    start_date = models.DateTimeField(verbose_name=_('Scheduled time'))
+    end_date = models.DateTimeField(verbose_name=_('Scheduled time'))
 
     def __str__(self):
-        return self.name
-
-
-class Inventory(models.Model):
-    name = models.CharField(max_length=255)
-    price = models.DecimalField(default=0.0, decimal_places=2, max_digits=8)
-    company = models.ForeignKey(to='carwash.Supplier', related_name='inventory', on_delete=models.CASCADE)
+        return f'{self.car} using {self.wash_type}'
 
     class Meta:
-        verbose_name = 'Inventory'
-        verbose_name_plural = 'Inventories'
-
-    def __str__(self):
-        return self.name
-
-
-class Orders(models.Model):
-
-    booth = models.ForeignKey(to='carwash.Booth', related_name='orders', on_delete=models.CASCADE)
-    start_time = models.DateTimeField(verbose_name='Start time')
-    end_time = models.DateTimeField(verbose_name='End time', blank=True, null=True)
-    car = models.ForeignKey(to='carwash.Car', on_delete=models.CASCADE, related_name="orders")
-    price = models.DecimalField(default=0.0, decimal_places=2, max_digits=5)
-    washer = models.ForeignKey(to='carwash.Employee', on_delete=models.CASCADE, related_name='orders', null=True, blank=True)
-    create_time = models.DateTimeField(verbose_name="Create time", auto_now_add=True)
-
-    class Meta:
-        verbose_name = 'Order'
-        verbose_name_plural = " Orders"
-
-    def __str__(self):
-        return f"order: {self.pk}"
+        verbose_name = _('Order')
+        verbose_name_plural = _('Orders')
 
     def save(self, *args, **kwargs):
-        self.price = self.car.car_type
-        super(Orders, self).save(*args, **kwargs)
+        if not self.pk:
+            self.price = self.car.car_type.price * self.wash_type.percentage / 100
+        super(Order, self).save(*args, **kwargs)

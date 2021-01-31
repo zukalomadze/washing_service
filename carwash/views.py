@@ -1,5 +1,6 @@
 from django.shortcuts import render
-from carwash.models import Orders, Employee
+from carwash.models import Order
+from user.models import User as Employee
 from django.utils import timezone
 import dateutil.relativedelta
 # Create your views here.
@@ -7,8 +8,8 @@ import dateutil.relativedelta
 
 def order_board(request):
     one_hour_ago = timezone.now()-timezone.timedelta(hours=1)
-    orders = Orders.objects.filter(end_time__gt=one_hour_ago) | Orders.objects.filter(end_time=None)
-    orders = orders.order_by('start_time')
+    orders = Order.objects.filter(end_date__gt=one_hour_ago) | Order.objects.filter(end_date=None)
+    orders = orders.order_by('start_date')
     return render(
         request,
         'carwash/tickets.html',
@@ -24,10 +25,10 @@ def employee_list(request):
     orders = {}
     employees = Employee.objects.all()
     for emp in employees:
-        emp_orders = Orders.objects.filter(washer=emp, end_time__gt=timezone.now()-timezone.timedelta(weeks=1)).count()
+        emp_orders = Order.objects.filter(washer=emp, end_date__gt=timezone.now()-timezone.timedelta(weeks=1)).count()
         orders[emp] = [emp_orders]
-        orders[emp].append(Orders.objects.filter(washer=emp, end_time__gt=last_month).count())
-        orders[emp].append(Orders.objects.filter(washer=emp, end_time__gt=last_year).count())
+        orders[emp].append(Order.objects.filter(washer=emp, end_date__gt=last_month).count())
+        orders[emp].append(Order.objects.filter(washer=emp, end_date__gt=last_year).count())
     return render(
         request,
         'carwash/employee_list.html',

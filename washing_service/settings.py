@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # Custom Apps
     'carwash.apps.CarwashConfig',
+    'user.apps.UserConfig',
 ]
 
 MIDDLEWARE = [
@@ -115,3 +116,14 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
+
+STATIC_ROOT = BASE_DIR / 'static_common'
+
+STATICFILES_DIRS = [
+    BASE_DIR / "static"
+]
+
+MEDIA_ROOT = 'media'
+MEDIA_URL = '/media/'
+
+AUTH_USER_MODEL = 'user.User'
