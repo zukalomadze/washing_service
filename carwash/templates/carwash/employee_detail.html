@@ -1,0 +1,93 @@
+{% extends 'carwash/base.html' %}
+{% load static %}
+
+{% block header %}
+    <link href="http://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="{% static 'carwash/employee_detail.css' %}">
+{% endblock header %}
+
+{% block content %}
+    <div class="container emp-profile">
+            <form method="post">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="profile-img">
+                            <img src="{{ washer.image.url }}" alt=""/>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="profile-head">
+                                    <h5>
+                                        {{ washer }}
+                                    </h5>
+                                    <h6>
+                                        მრეცხავი
+                                    </h6>
+                                    <p class="proile-rating">RANKING : <span>8/10</span></p>
+                            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                                {% if length == 'year'%}
+                                    <li class="nav-item">
+                                    <a class="nav-link active" id="year-tab" data-toggle="tab" href="?length=year" role="tab" aria-controls="year" aria-selected="true">Year</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" id="month-tab" data-toggle="tab" href="?length=month" role="tab" aria-controls="month" aria-selected="false">Month</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" id="week-tab" data-toggle="tab" href="?length=week" role="tab" aria-controls="week" aria-selected="false">Week</a>
+                                    </li>
+                                {% elif length == 'month' %}
+                                    <li class="nav-item">
+                                    <a class="nav-link" id="year-tab" data-toggle="tab" href="?length=year" role="tab" aria-controls="year" aria-selected="true">Year</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link active" id="month-tab" data-toggle="tab" href="?length=month" role="tab" aria-controls="month" aria-selected="false">Month</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" id="week-tab" data-toggle="tab" href="?length=week" role="tab" aria-controls="week" aria-selected="false">Week</a>
+                                    </li>
+                                {% else %}
+                                    <li class="nav-item">
+                                    <a class="nav-link" id="year-tab" data-toggle="tab" href="?length=year" role="tab" aria-controls="year" aria-selected="true">Year</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" id="month-tab" data-toggle="tab" href="?length=month" role="tab" aria-controls="month" aria-selected="false">Month</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link active" id="week-tab" data-toggle="tab" href="?length=week" role="tab" aria-controls="week" aria-selected="false">Week</a>
+                                    </li>
+                                {% endif %}
+
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="tab-content profile-tab" id="myTabContent">
+                            <div class="tab-pane fade show active" id="year" role="tabpanel" aria-labelledby="year-tab">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label>Orders completed</label>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <p>{{ orders.count|default:"0" }}</p>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label>Money earned from cut</label>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <p>{{ commission }} $</p>
+                                            </div>
+                                        </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+{% endblock content %}

@@ -1,14 +1,17 @@
-from django.db.models import Count
+from django.db.models import Count, Sum
+from django.http import Http404
 from django.shortcuts import render
 from carwash.models import Order
 from user.models import User as Employee
 from django.utils import timezone
 import dateutil.relativedelta
+
+
 # Create your views here.
 
 
 def order_board(request):
-    one_hour_ago = timezone.now()-timezone.timedelta(hours=1)
+    one_hour_ago = timezone.now() - timezone.timedelta(hours=1)
     orders = Order.objects.filter(end_date__gt=one_hour_ago) | Order.objects.filter(end_date=None)
     orders = orders.order_by('start_date')
     return render(
@@ -26,7 +29,8 @@ def employee_list(request):
     orders = {}
     employees = Employee.objects.filter(status=Employee.Status.washer)
     for emp in employees:
-        emp_orders = Order.objects.filter(employee=emp, end_date__gt=timezone.now()-timezone.timedelta(weeks=1)).count()
+        emp_orders = Order.objects.filter(employee=emp,
+                                          end_date__gt=timezone.now() - timezone.timedelta(weeks=1)).count()
         orders[emp] = [emp_orders]
         orders[emp].append(Order.objects.filter(employee=emp, end_date__gt=last_month).count())
         orders[emp].append(Order.objects.filter(employee=emp, end_date__gt=last_year).count())
@@ -54,4 +58,39 @@ def base(request):
         request,
         'carwash/base.html',
         context={},
+    )
+
+
+def washer_detail(request, washer_id):
+    length = request.GET.get('length')
+    try:
+        washer = Employee.objects.get(pk=washer_id)
+        if length == 'week':
+            orders = Order.objects.filter(employee=washer,
+                                          end_date__gt=timezone.now() - timezone.timedelta(weeks=1))
+        elif length == 'month':
+            orders = Order.objects.filter(employee=washer,
+                                          end_date__gt=timezone.now() - timezone.timedelta(days=30))
+        elif length == 'year':
+            orders = Order.objects.filter(employee=washer,
+                                          end_date__gt=timezone.now() - timezone.timedelta(days=365))
+        else:
+            orders = Order.objects.filter(employee=washer)
+        if len(orders):
+            sum_prices = orders.aggregate(Sum('price'))['price__sum']
+
+            commission = sum_prices * (washer.cut / 100)
+        else:
+            commission = 0
+    except Employee.DoesNotExist:
+        raise Http404("Question does not exist")
+    return render(
+        request,
+        'carwash/employee_detail.html',
+        context={
+            'washer': washer,
+            'length': length,
+            'commission': commission,
+            'orders': orders,
+        }
     )

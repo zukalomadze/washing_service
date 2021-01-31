@@ -27,7 +27,7 @@
                         <p>მე გავრეცხე {{ washer.washed_count }}</p>
                     </div>
                     <div class="card-action">
-                        <a href="#">დამატებით</a>
+                        <a href="{% url 'washer_detail' washer.pk %}">დამატებით</a>
                     </div>
                 </div>
             </div>

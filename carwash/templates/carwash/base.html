@@ -8,13 +8,15 @@
 
     <!-- Compiled and minified JavaScript -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    {% block header %}
+    {% endblock header %}
 </head>
 
 
 <body>
 <nav>
     <div class="nav-wrapper">
-        <a href="#!" class="brand-logo">Logo</a>
+        <a href="{% url 'washer_list' %}" class="brand-logo">Logo</a>
         <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
         <ul class="right hide-on-med-and-down">
             <li><a href="{% url 'washer_list' %}">Employee list</a></li>
@@ -32,31 +34,31 @@
 {% block content %}
 {% endblock content %}
 
-        <footer class="page-footer">
-          <div class="container">
-            <div class="row">
-              <div class="col l6 s12">
-                <h5 class="white-text">This is a car wash website</h5>
-                <p class="grey-text text-lighten-4"></p>
-              </div>
-              <div class="col l4 offset-l2 s12">
-                <h5 class="white-text">Links</h5>
-                <ul>
-                  <li><a class="grey-text text-lighten-3" href="https://github.com/zukalomadze">github</a></li>
-                </ul>
-              </div>
-            </div>
-          </div>
-          <div class="footer-copyright">
-            <div class="container">
-            © 2014 Copyright Text
-            <a class="grey-text text-lighten-4 right" href="#!">More Links</a>
-            </div>
-          </div>
-        </footer>
+{#        <footer class="page-footer">#}
+{#          <div class="container">#}
+{#            <div class="row">#}
+{#              <div class="col l6 s12">#}
+{#                <h5 class="white-text">This is a car wash website</h5>#}
+{#                <p class="grey-text text-lighten-4"></p>#}
+{#              </div>#}
+{#              <div class="col l4 offset-l2 s12">#}
+{#                <h5 class="white-text">Links</h5>#}
+{#                <ul>#}
+{#                  <li><a class="grey-text text-lighten-3" href="https://github.com/zukalomadze">github</a></li>#}
+{#                </ul>#}
+{#              </div>#}
+{#            </div>#}
+{#          </div>#}
+{#          <div class="footer-copyright">#}
+{#            <div class="container">#}
+{#            © 2014 Copyright Text#}
+{#            <a class="grey-text text-lighten-4 right" href="#!">More Links</a>#}
+{#            </div>#}
+{#          </div>#}
+{#        </footer>#}
 
 
-<script src="{% static 'js/nav_collapse.js' %}"></script>
+<script src="{% static 'carwash/js/nav_collapse.js' %}"></script>
 </body>
 
 </html>
