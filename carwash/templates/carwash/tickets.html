@@ -21,8 +21,8 @@
 		                            <li class="ticket-item">
 		                                <div class="row">
 		                                    <div class="ticket-user col-md-6 col-sm-12">
-		                                        <img src="https://bootdey.com/img/Content/user_1.jpg" class="user-avatar">
-		                                        <span class="user-name">{{ order.washer }}</span>
+		                                        <img src="{{ order.employee.image.url }}" class="user-avatar">
+		                                        <span class="user-name">{{ order.employee }}</span>
 		                                        <span class="user-at">in Booth</span>
 		                                        <span class="user-company">{{ order.booth }}</span>
 		                                    </div>
@@ -35,7 +35,7 @@
 		                                    </div>
 		                                    <div class="ticket-type  col-md-2 col-sm-6 col-xs-12">
 		                                        <span class="divider hidden-xs"></span>
-		                                        <span class="car">car: {{ order.car.license_plate }}</span>
+		                                        <span class="car">car: {{ order.car }}</span>
                                                 <br/>
                                                 <span class="price">{{ order.price }}$</span>
                                                 <span class="time-created">created: {{ order.create_date|date:"j/n/Y"}} {{order.create_date|time:"H:i" }}</span>

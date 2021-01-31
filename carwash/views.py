@@ -23,12 +23,12 @@ def employee_list(request):
     last_month = now + dateutil.relativedelta.relativedelta(months=-1)
     last_year = now + dateutil.relativedelta.relativedelta(years=-1)
     orders = {}
-    employees = Employee.objects.all()
+    employees = Employee.objects.filter(status=Employee.Status.washer)
     for emp in employees:
-        emp_orders = Order.objects.filter(washer=emp, end_date__gt=timezone.now()-timezone.timedelta(weeks=1)).count()
+        emp_orders = Order.objects.filter(employee=emp, end_date__gt=timezone.now()-timezone.timedelta(weeks=1)).count()
         orders[emp] = [emp_orders]
-        orders[emp].append(Order.objects.filter(washer=emp, end_date__gt=last_month).count())
-        orders[emp].append(Order.objects.filter(washer=emp, end_date__gt=last_year).count())
+        orders[emp].append(Order.objects.filter(employee=emp, end_date__gt=last_month).count())
+        orders[emp].append(Order.objects.filter(employee=emp, end_date__gt=last_year).count())
     return render(
         request,
         'carwash/employee_list.html',
