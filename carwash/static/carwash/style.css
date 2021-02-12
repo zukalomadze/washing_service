@@ -190,3 +190,10 @@
     font-size: 13px;
     text-decoration: none;
 }
+
+.car-history a {
+    line-height: 33px;
+    padding: 10px;
+    font-size: 13px;
+    text-decoration: none;
+}

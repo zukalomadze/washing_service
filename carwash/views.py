@@ -4,9 +4,11 @@ from django.shortcuts import render
 from carwash.models import Order
 from user.models import User as Employee
 from django.utils import timezone
+from django.core.paginator import Paginator
 import dateutil.relativedelta
+from .models import Order, Car
 
-
+from .forms import CarForm
 # Create your views here.
 
 
@@ -94,3 +96,23 @@ def washer_detail(request, washer_id):
             'orders': orders,
         }
     )
+
+
+def car_list(request):
+    cars_list = Car.objects.all()
+
+    page = request.GET.get('page', 1)
+
+    paginator = Paginator(cars_list, 12)
+    cars = paginator.page(page)
+
+    car_form = CarForm()
+    message_text = None
+    if request.method == 'POST':
+        car_form = CarForm(request.POST)
+        if car_form.is_valid():
+            car: Car = car_form.save(commit=False)
+            car.save()
+            message_text = f'Car Successfully added!'
+            car_form = CarForm()
+    return render(request, 'carwash/cars.html', context={'cars': cars, 'form': car_form, 'message': message_text})

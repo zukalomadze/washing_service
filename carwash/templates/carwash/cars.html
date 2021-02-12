@@ -1,10 +1,52 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+{% extends 'carwash/base.html' %}
+    {% load static %}
+{% block content %}
+    <section id="orders">
+        <div class="container">
+            <div class="section-header">
+                <br>
+                <br>
+                <h2 class="section-title text-center wow fadeInDown">Cars</h2>
+            </div>
+            <form class="contact100-form validate-form car-form center" action="/cars" method="post">
+                {% csrf_token %}
+                <div class="wrap-input100 validate-input">
+                    <span class="label-input100">Licence Plate</span>
+                    <div >
+                        {{ form.licence_plate }}
+                    </div>
+                    <span class="focus-input100"></span>
+                </div>
+                    {{ form.car_type }}
+                <div class="container-contact100-form-btn">
+                    <div class="wrap-contact100-form-btn">
+                        <div class="contact100-form-bgbtn"></div>
+                        <button class="contact100-form-btn">
+							<span>
+								Add Car
+							</span>
+                        </button>
+                    </div>
+                </div>
+            </form>
+            <hr>
+            <br>
+            <br>
+            <div class="row">
+                {% for car in cars %}
+                    <div class="col-md-3 col-sm-6 card-margin ">
+                            <div>
+                                <div class="text-center">
+                                    <br>
+                                    <h3>{{ car.licence_plate }}</h3>
+                                    <h4>Type: {{ car.car_type }}</h4>
+                                    <br>
+                                </div>
+                            </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+{% endblock %}
