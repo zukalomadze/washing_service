@@ -1,7 +1,7 @@
 {% extends 'carwash/base.html' %}
     {% load static %}
 {% block content %}
-    <section id="orders">
+    <section id="cars">
         <div class="container">
             <div class="section-header">
                 <br>
@@ -48,6 +48,27 @@
                     </div>
                 {% endfor %}
             </div>
+        {% if cars.has_other_pages %}
+                <ul class="pagination">
+                    {% if cars.has_previous %}
+                        <li><a href="?page={{ cars.previous_page_number }}">&laquo;</a></li>
+                    {% else %}
+                        <li class="disabled"><span>&laquo;</span></li>
+                    {% endif %}
+                    {% for i in cars.paginator.page_range %}
+                        {% if cars.number == i %}
+                            <li class="active"><span>{{ i }}</span></li>
+                        {% else %}
+                            <li><a href="?page={{ i }}">{{ i }}</a></li>
+                        {% endif %}
+                    {% endfor %}
+                    {% if cars.has_next %}
+                        <li><a href="?page={{ cars.next_page_number }}">&raquo;</a></li>
+                    {% else %}
+                        <li class="disabled"><span>&raquo;</span></li>
+                    {% endif %}
+                </ul>
+            {% endif %}
         </div>
     </section>
 
