@@ -103,16 +103,14 @@ def car_list(request):
 
     page = request.GET.get('page', 1)
 
-    paginator = Paginator(cars_list, 12)
+    paginator = Paginator(cars_list, 10)
     cars = paginator.page(page)
 
     car_form = CarForm()
-    message_text = None
     if request.method == 'POST':
         car_form = CarForm(request.POST)
         if car_form.is_valid():
             car: Car = car_form.save(commit=False)
             car.save()
-            message_text = f'Car Successfully added!'
             car_form = CarForm()
-    return render(request, 'carwash/cars.html', context={'cars': cars, 'form': car_form, 'message': message_text})
+    return render(request, 'carwash/cars.html', context={'cars': cars, 'form': car_form})
